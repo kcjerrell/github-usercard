@@ -13,7 +13,7 @@ axios.get(githubUrl).then((response) => {
   console.log(response);
   const card = makeCard(response.data);
   document.querySelector('.cards').appendChild(card);
-});
+}, reason => console.log(reason));
 
 
 /*
@@ -48,9 +48,9 @@ axios.get('https://api.github.com/users/kcjerrell/following').then(response => {
     axios.get(url).then(response => {
       const card = makeCard(response.data);
       document.querySelector('.cards').appendChild(card);
-    })
+    }, reason => console.log(reason));
   });
-});
+}, reason => console.log(reason));
 
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
