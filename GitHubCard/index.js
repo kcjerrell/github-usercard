@@ -4,6 +4,18 @@
     https://api.github.com/users/<your name>
 */
 
+import axios from 'axios';
+import { makeElement } from "./Helpers";
+
+const githubUrl = 'https://api.github.com/users/kcjerrell';
+
+axios.get(githubUrl).then((response) => {
+  console.log(response);
+  const card = makeCard(response.data);
+  document.querySelector('.cards').appendChild(card);
+}, reason => console.log(reason));
+
+
 /*
   STEP 2: Inspect and study the data coming back, this is YOUR
     github info! You will need to understand the structure of this
@@ -30,6 +42,16 @@
 
 const followersArray = [];
 
+axios.get('https://api.github.com/users/kcjerrell/following').then(response => {
+  const urls = response.data.map(r => r.url);
+  urls.forEach(url => {
+    axios.get(url).then(response => {
+      const card = makeCard(response.data);
+      document.querySelector('.cards').appendChild(card);
+    }, reason => console.log(reason));
+  });
+}, reason => console.log(reason));
+
 /*
   STEP 3: Create a function that accepts a single object as its only argument.
     Using DOM methods and properties, create and return the following markup:
@@ -49,6 +71,33 @@ const followersArray = [];
       </div>
     </div>
 */
+
+function makeCard(githubData) {
+  const card = makeElement('div', { style: 'card' });
+  const avatar = makeElement('img', { src: githubData.avatar_url });
+  const cardInfo = makeElement('div', { style: 'card-info' });
+  const name = makeElement('h3', { text: githubUrl.name, style: 'name' });
+  const username = makeElement('p', { style: 'username', text: githubData.login });
+  const location = makeElement('p', { text: `Location: ${location}` });
+  const profile = makeElement('p', { text: 'Profile: ' });
+  const link = makeElement('a', { href: githubData.html_url, text: githubData.html_url });
+  const followers = makeElement('p', { text: `Followers: ${githubData.followers}` });
+  const following = makeElement('p', { text: `Following: ${githubData.following}` });
+  const bio = makeElement('p', { text: `Bio: ${githubData.bio}` });
+
+  card.appendChild(avatar);
+  card.appendChild(cardInfo);
+  cardInfo.appendChild(name);
+  cardInfo.appendChild(username);
+  cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
+  profile.appendChild(link);
+  cardInfo.appendChild(followers);
+  cardInfo.appendChild(following);
+  cardInfo.appendChild(bio);
+
+  return card;
+}
 
 /*
   List of LS Instructors Github username's:
